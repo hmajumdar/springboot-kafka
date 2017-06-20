@@ -199,4 +199,4 @@ This will not guarantee exactly once, but will reduce message loss or duplicatio
 
 ## Application Issues with Kafka V8
 1. **Generic Commit:** Offset is committed as soon as new message arrives before being processed. This usually happens when there is an existing message being processed and on its way to commit. The new message gets committed along with the existing message.
-2. **New Consumer:** When a new consumer gets added it does not read existing messages in a Topic, only new message that come into the topic are read by the consumer. This
+2. **New Consumer:** When a new consumer gets added it does not read existing messages in a Topic, only new message that come into the topic are read by the consumer.

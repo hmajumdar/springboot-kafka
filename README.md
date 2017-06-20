@@ -1,24 +1,27 @@
 Table of contents
 =================
 
+  * [About this Microservice](#about-this-microservice)
   * [Rebalancing Test for Kafka 0.10 API](#rebalancing-test-for-kafka-0.10-api)
   * [Infrastructure Setup Commands](#infrastructure-setup-commands)
-  * [About this Microservice](#about-this-microservice)
   * [Running](#running)
   * [Test Cases](#test-cases)
-  * [Issues with Zeno Applications on Kafka V8](#issues-with-zeno-applications-on-kafka-v8)
+  * [Application Issues with Kafka V8](#application-issues-with-kafka-v8)
 
 
-Rebalancing Test for Kafka 0.10 API
-===================================
+About this Microservice
+=======================
 
-The event in which partition ownership is moved from one consumer to another is called a **rebalance**. Rebalances are usually triggered when a “consumer” goes down or when its added, but ther term "rebalancing" is also often used
-to describe when broker/node goes down or is added. So, there are two things that people usually mean when they talk about rebalancing.
+This is a spring-boot microservice project, which currently supports the following types of Kafka consumers which were added in Kafka v10.
 
-1. Leader re-election, or preferred replica election: When Broker gets added/deleted
-2. Partition rebalancing: When Consumer gets added/deleted
-
-Thru this test project we would perform Rebalancing Tests and find the best approach to address issues faced by applications onboarded to Zeno.
+1. AutoCommit
+2. Synchronous Consumer
+3. Atleast Once Consumer
+4. Atmost Once Consumer
+5. Exactly Once Consumer (One record at a time)
+6. Commit to a specific partition consumer
+7. Asynchronous Consumer
+8. Multiple Consumer
 
 
 ## Infrastructure Setup Test Cases
@@ -65,22 +68,6 @@ For example, in server-1.properties used for broker1, we define the following:
 * log.dir=/tmp/kafka-logs-1
 
 
-
-About this Microservice
-=======================
-
-This is a spring-boot microservice project, which currently supports the following types of Kafka consumers which were added in Kafka v10.
-
-1. AutoCommit
-2. Synchronous Consumer
-3. Atleast Once Consumer
-4. Atmost Once Consumer
-5. Exactly Once Consumer (One record at a time)
-6. Commit to a specific partition consumer
-7. Asynchronous Consumer
-8. Multiple Consumer
-
-
 Running
 =================
 
@@ -97,6 +84,18 @@ Running
     `mvn spring-boot:run -Dtype="synch" -Dtopic="topicName" -Dduration="40"`
 
 **type** = "auto", "synch", "atleast", "atmost", "exact", "partition", "async", "multiple"
+
+
+Rebalancing Test for Kafka 0.10 API
+===================================
+
+The event in which partition ownership is moved from one consumer to another is called a **rebalance**. Rebalances are usually triggered when a “consumer” goes down or when its added, but ther term "rebalancing" is also often used
+to describe when broker/node goes down or is added. So, there are two things that people usually mean when they talk about rebalancing.
+
+1. Leader re-election, or preferred replica election: When Broker gets added/deleted
+2. Partition rebalancing: When Consumer gets added/deleted
+
+Thru this test project we would perform Rebalancing Tests and find the best approach to address issues faced by applications.
 
 
 Test Cases
@@ -198,6 +197,6 @@ This will not guarantee exactly once, but will reduce message loss or duplicatio
 **From Kafka dev forum:** In general, it is not possible for any system to guarantee exactly once semantics because those semantics rely on the source and destination systems coordinating -- the source provides some sort of retry semantics, and the destination system needs to do some sort of deduplication or similar to only "deliver" the data one time.
 
 
-## Issues with Zeno Applications on Kafka V8
+## Application Issues with Kafka V8
 1. **Generic Commit:** Offset is committed as soon as new message arrives before being processed. This usually happens when there is an existing message being processed and on its way to commit. The new message gets committed along with the existing message.
 2. **New Consumer:** When a new consumer gets added it does not read existing messages in a Topic, only new message that come into the topic are read by the consumer. This
